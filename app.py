@@ -3,17 +3,23 @@ import psycopg2
 from psycopg2 import pool
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 app=Flask(__name__)  
 app.secret_key="hello123"
 db_pool = pool.SimpleConnectionPool(
     1,
     15,
-    host="ep-long-brook-ap6w99ft-pooler.c-7.us-east-1.aws.neon.tech",
-    database="neondb",
-    user="neondb_owner",
-    password="npg_eCYh5yEwT4lv",
+    host=DB_HOST,
+    database=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
     sslmode="require"
 )
 def get_connection():
