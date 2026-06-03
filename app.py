@@ -1,11 +1,24 @@
 from flask import Flask, render_template, request,session,redirect,flash
 import psycopg2
+from psycopg2 import pool
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 
 app=Flask(__name__)  
 app.secret_key="hello123"
+db_pool = pool.SimpleConnectionPool(
+    1,
+    15,
+    host="ep-long-brook-ap6w99ft-pooler.c-7.us-east-1.aws.neon.tech",
+    database="neondb",
+    user="neondb_owner",
+    password="npg_eCYh5yEwT4lv",
+    sslmode="require"
+)
+def get_connection():
+    return db_pool.getconn()
+
 
 @app.route("/")
 def home():
@@ -24,7 +37,7 @@ def login_func():
 def logindata():
     user=request.form["user"]
     password=request.form["pass"]
-    conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+    conn = get_connection()
     cur=conn.cursor()
     cur.execute('select * from "User" where name=%s',(user,))
     d=cur.fetchone()
@@ -44,8 +57,7 @@ def logindata():
         flash("No User Exist")
         return redirect('/login')
 
-    conn.commit()
-    conn.close()
+    db_pool.putconn(conn)
     cur.close()
     
     
@@ -53,7 +65,7 @@ def logindata():
 def registerdata():
     user=request.form["user"]
     password=request.form["pass"]
-    conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+    conn = get_connection()
     cur=conn.cursor()
     hashed=generate_password_hash(password)
     cur.execute('select * from "User" where name =%s',(user,))
@@ -65,7 +77,7 @@ def registerdata():
         cur.execute('Insert into "User" (name,password) values(%s,%s)',(user,hashed))
         conn.commit()
         cur.close()
-        conn.close()
+        db_pool.putconn(conn)
         flash("Registered User Successfully Login Now")
         return redirect('/login')
 
@@ -73,7 +85,7 @@ def registerdata():
 def dashboard_page():
     if "user" in session:
         user=session["user"]
-        conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+        conn = get_connection()
         cur=conn.cursor()
         cur.execute("select * from tasks where name =%s",(user,))
         d=cur.fetchall()
@@ -87,8 +99,7 @@ def dashboard_page():
 
         conn.commit()
         cur.close()
-        conn.close()
-
+        db_pool.putconn(conn)
 
         return render_template("dashboard.html",user=user,tasks=d,p=p,c=c)
     else:
@@ -102,34 +113,34 @@ def pop_up():
     else:
         return redirect("/login")
     task=request.form["task"]
-    conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+    conn = get_connection()
     cur=conn.cursor()
     cur.execute('insert into tasks(name,t_name,status) values(%s,%s,%s)',(user,task,False))
     conn.commit()
     cur.close()
-    conn.close()
+    db_pool.putconn(conn)
     return redirect("/dashboard")
 
 @app.route("/done/<int:id>")
 def done(id):
-    conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+    conn = get_connection()
     cur=conn.cursor()
-    cur.execute("update tasks set status=NOT status where t_id=%s",(id,))
+    cur.execute("update tasks set status=NOT status where tid=%s",(id,))
 
     conn.commit()
     cur.close()
-    conn.close()
+    db_pool.putconn(conn)
     return redirect("/dashboard")
 
 @app.route("/delete/<int:id>")
 def delete(id):
-    conn=psycopg2.connect(host="localhost",database="flask1stDB",user="postgres",password="vidhu")
+    conn = get_connection()
     cur=conn.cursor()
-    cur.execute("delete from tasks where t_id=%s",(id,))
+    cur.execute("delete from tasks where tid=%s",(id,))
 
     conn.commit()
     cur.close()
-    conn.close()
+    db_pool.putconn(conn)
     return redirect("/dashboard")
 
 @app.route("/logout")
