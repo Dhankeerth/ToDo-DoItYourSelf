@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <title>Register</title>
+</head>
+
+<body  style="            background:black;
+            color:white;
+            font-family:system-ui;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;">
+    <div  style="
+display:flex;
+flex-direction:column;
+gap:20px;
+">    <br><br>
+   <h2>Welcome New User</h2>
+   {% with h=get_flashed_messages()%}
+   {% if h%}
+   <p style="color: #e41414f1;">{{h[-1]}}</p>
+        {% endif%}
+        {% endwith%}
+        <form method="POST" action="/registerdata"  style="  display:flex;
+            flex-direction: column; gap:15px;
+            width:280;">
+            Enter Your UserName:<input type="text" name="user" placeholder="Name" ><br>
+            Enter Your Password:<input type="password" name="pass" placeholder="password" id="p"><br>
+            Confirm Password: <input type="password" name="cpass" placeholder="confirm_password" id="cp"><br>
+            <button type="submit" onclick="return val()">submit</button>
+            <p id="res" style="color: #fc5757;
+    font-size: 14px;
+    text-align: center;
+    margin: 5px 0;" ></p>
+        </form>
+    </div>
+<script>
+    function val(){
+        let cp=document.getElementById("cp").value;
+        let p= document.getElementById("p").value;
+        let l=document.getElementById("res");
+        if(cp!=p){
+            l.innerHTML="password and confirm password should be same";
+            return false;
+        }else if((p.length) < 8){
+            l.innerHTML="password should contain atleast 8 charcters"
+            return false;
+        }else if(!/[A-Z]/.test(p)){
+            l.innerHTML ="Password should have upper case"
+            return false;
+        } else if (!/[a-z]/.test(p)) {
+            l.innerHTML = "Password should have lower case"
+            return false;
+        } else if (!/[0-9]/.test(p)) {
+            l.innerHTML = "Password should have a number"
+            return false;
+        }
+        return true;
+    }
+</script>
+<style>
+    input {
+
+        background: #111;
+        border: 1px solid #333;
+
+        padding: 15px;
+        border-radius: 12px;
+
+        color: white;
+        font-size: 15px;
+    }
+
+    button {
+
+        padding: 15px;
+
+        border: none;
+        border-radius: 12px;
+
+        background: white;
+        color: black;
+
+        font-size: 15px;
+
+    }
+</style>
+
+</body>
+
+</html>

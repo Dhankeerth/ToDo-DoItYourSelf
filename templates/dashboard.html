@@ -1,0 +1,131 @@
+
+<html>
+    <head>
+        <title>To-Do_Today</title>
+    </head>
+    <body>
+        <div class="header">
+        <h1>Hello, {{user}} 👋</h1>
+        
+            <a href="/logout">
+                <button>Logout</button>
+            </a>
+        </div>
+        
+        <br>
+        <h2>Today's Tasks</h2>
+        {% for i in tasks %}
+        <div class="task">
+            <div class="row">
+                <span>{% if i[3] %}
+                
+                    ☑ {{i[2]}}
+                
+                    {% else %}
+                
+                    ☐ {{i[2]}}
+                
+                    {% endif %}
+                
+                </span>
+                <div>
+                    <a href="/done/{{i[0]}}">
+                        <button>Done</button>
+                    </a>
+                    <a href="/delete/{{i[0]}}">
+                        <button>Delete</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <p>Pending: {{p}}</p>
+        <p>Completed: {{c}}</p>
+      
+        <button onclick="validatepop()">Add New Task</button>
+        
+        <div id="popup">
+            <div id="box">
+
+                <h2>Add New Task</h2> <br>
+                    <button onclick="validate_unpop()" style="margin-left: 300;">Close</button>
+                    <form method="POST" action="/addpopuptask">
+                        <input type="text" name="task" required>
+                        <button type="submit">Add</button>
+                        
+                    </form>
+            </div>
+
+        </div>
+        
+<script>
+    function validatepop() {
+            document.getElementById("popup").style.display = "flex";
+        }
+    function validate_unpop(){
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
+<style>
+    body{
+    margin:10;
+    background-color: rgb(19, 18, 18);
+    color: rgb(187, 178, 178);
+    font-family:system-ui;
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+}
+
+.task{
+    background:#3b3737;
+    color: white;
+    padding:10px;
+    margin:10px 25px;
+    border-radius:28px;
+}
+.row{
+      display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+#popup{
+
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(4px);
+}
+#box{
+    background:#0b0b0b;
+    color: rgb(251, 251, 251);
+    padding:30px;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    gap:20;
+
+}
+button{
+    background:#e4dfdf;
+    color:black;
+    font-style: oblique;
+    border:none;
+    padding:10px 15px;
+    border-radius:20px;
+}
+
+</style>
+
+    </body>
+</html>
