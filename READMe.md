@@ -8,7 +8,30 @@ A full-stack Todo application built using Flask and PostgreSQL. The project allo
 https://todo-doityourself.onrender.com
 
 
-## Features
+## Screenshots
+
+### Home Page
+
+![Home Page](screenshots/homePage.png)
+
+### Register Page
+
+![Register Page](screenshots/register.png)
+
+### Login Page
+
+![Login Page](screenshots/loginPage.png)
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### Add Task
+![Add a Task](screenshots/addTask.png)
+
+### To DO - DoItYourSelf
+![ToDO](screenshots/ToDo.png)
+
 
 ### Authentication
 
